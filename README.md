@@ -17,17 +17,15 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Each song has ten attributes. Three are for identification: id, title, and artist. Two are categorical: genre and mood. Five are numerical audio features on a 0.0 to 1.0 scale: energy, valence, danceability, acousticness, and tempo in beats per minute.
 
-Some prompts to answer:
+A user profile stores a preference for every one of those features. It has a favorite genre, a favorite mood, and a personal target value for each of the five numerical features.
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+To score a song the system awards points in two stages. First it checks the categorical features. A genre match earns 3.0 points. A mood match earns 2.0 points. No match earns 0.
 
-You can include a simple diagram or bullet list if helpful.
+For the numerical features the system rewards closeness, not just high or low values. The closer the song is to the user's target the more points it earns. A perfect match earns the full amount. As the gap grows the points drop sharply toward zero. The maximums are 1.5 for energy, 1.2 for valence, 1.0 for tempo, 0.8 for danceability, and 0.5 for acousticness.
+
+The highest possible score is 10.0 points. Songs are ranked from highest to lowest. No more than two songs from the same artist appear in the top five. If two songs are within 0.02 points of each other the one with the genre match is ranked higher.
 
 ---
 
@@ -41,6 +39,8 @@ You can include a simple diagram or bullet list if helpful.
    python -m venv .venv
    source .venv/bin/activate      # Mac or Linux
    .venv\Scripts\activate         # Windows
+
+   ```
 
 2. Install dependencies
 
@@ -101,12 +101,11 @@ Write 1 to 2 paragraphs here about what you learned:
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
 
-
 ---
 
 ## 7. `model_card_template.md`
 
-Combines reflection and model card framing from the Module 3 guidance. :contentReference[oaicite:2]{index=2}  
+Combines reflection and model card framing from the Module 3 guidance. :contentReference[oaicite:2]{index=2}
 
 ```markdown
 # 🎧 Model Card - Music Recommender Simulation
@@ -158,6 +157,7 @@ Describe your dataset.
 Where does your recommender work well
 
 You can think about:
+
 - Situations where the top results "felt right"
 - Particular user profiles it served well
 - Simplicity or transparency benefits
@@ -169,6 +169,7 @@ You can think about:
 Where does your recommender struggle
 
 Some prompts:
+
 - Does it ignore some genres or moods
 - Does it treat all users as if they have the same taste shape
 - Is it biased toward high energy or one genre by default
@@ -181,6 +182,7 @@ Some prompts:
 How did you check your system
 
 Examples:
+
 - You tried multiple user profiles and wrote down whether the results matched your expectations
 - You compared your simulation to what a real app like Spotify or YouTube tends to recommend
 - You wrote tests for your scoring logic
@@ -208,4 +210,4 @@ A few sentences about what you learned:
 - What surprised you about how your system behaved
 - How did building this change how you think about real music recommenders
 - Where do you think human judgment still matters, even if the model seems "smart"
-
+```
