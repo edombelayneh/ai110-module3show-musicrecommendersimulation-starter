@@ -29,6 +29,10 @@ The highest possible score is 10.0 points. Songs are ranked from highest to lowe
 
 ---
 
+## Screenshot of Terminal
+
+## ![alt text](<Screenshot 2026-04-12 at 12.28.20 PM.png>)
+
 ## Getting Started
 
 ### Setup
