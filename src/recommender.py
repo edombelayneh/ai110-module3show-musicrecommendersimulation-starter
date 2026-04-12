@@ -72,19 +72,42 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, str]:
     score = 0.0
     reasons = []
 
-    # Categorical scoring
+    # --- ORIGINAL weights (commented out for weight-shift experiment) ---
+    # if song.get("genre") == user_prefs.get("genre"):
+    #     score += 3.0
+    #     reasons.append(f"genre match (+3.0)")
+    # if song.get("mood") == user_prefs.get("mood"):
+    #     score += 2.0
+    #     reasons.append(f"mood match (+2.0)")
+    # numerical_features = [
+    #     ("energy",       1.5, 1.0),
+    #     ("valence",      1.2, 1.0),
+    #     ("tempo_bpm",    1.0, 100.0),
+    #     ("danceability", 0.8, 1.0),
+    #     ("acousticness", 0.5, 1.0),
+    # ]
+
+    # --- EXPERIMENTAL weights ---
+    # Genre lowered to 1.5 — close to mood so a strong numerical match
+    # can realistically outweigh a genre miss.
+    # Mood raised to 2.5 — mood is how a song *feels*, and that's often
+    # what users actually remember about a recommendation.
+    # Valence boosted to 2.0 — valence (musical positivity/negativity) is
+    # the numerical feature most correlated with mood. Giving it more weight
+    # means the system rewards songs that *sound like* the target mood even
+    # when the mood label doesn't match exactly.
     if song.get("genre") == user_prefs.get("genre"):
-        score += 3.0
-        reasons.append(f"genre match (+3.0)")
+        score += 1.5
+        reasons.append(f"genre match (+1.5)")
     if song.get("mood") == user_prefs.get("mood"):
-        score += 2.0
-        reasons.append(f"mood match (+2.0)")
+        score += 2.5
+        reasons.append(f"mood match (+2.5)")
 
     # Numerical scoring: max_points * max(0, 1 - gap / max_gap)
     # max_gap for 0-1 scale features is 1.0; tempo uses 100 BPM as the range
     numerical_features = [
         ("energy",       1.5, 1.0),
-        ("valence",      1.2, 1.0),
+        ("valence",      2.0, 1.0),
         ("tempo_bpm",    1.0, 100.0),
         ("danceability", 0.8, 1.0),
         ("acousticness", 0.5, 1.0),
